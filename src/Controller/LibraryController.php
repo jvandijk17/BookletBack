@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Book;
+use App\Repository\BookRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,24 +14,24 @@ class LibraryController extends AbstractController
 {
 
     /**
-     * @Route("/library/list", name="library_list")
+     * @Route("/books", name="books_get")
      *      
      */
-    public function list()
+    public function list(BookRepository $br)
     {
+        $books = $br->findAll();
+        $booksAsArray = [];
+        foreach($books as $book) {
+            $booksAsArray[] = [
+                'id' => $book->getId(),
+                'title' => $book->getTitle(),
+                'image' => $book->getImage()
+            ];
+        }
         $response = new JsonResponse();
         $response->setData([
             'success' => true,
-            'data' => [
-                [
-                    'id' => 1,
-                    'title' => 'Hacia rutas salvajes'
-                ],
-                [
-                    'id' => 2,
-                    'title' => 'El nombre del viento'
-                ]
-            ]
+            'data' => $booksAsArray
         ]);
         return $response;
     }
@@ -40,7 +43,7 @@ class LibraryController extends AbstractController
     public function createBook(Request $request, EntityManagerInterface $em)
     {
         $book = new Book();
-        $book->setTitle('Hacia rutas salvajes');
+        $book->setTitle($request->get('title'));
         $em->persist($book);
         $em->flush();
         $response = new JsonResponse();
