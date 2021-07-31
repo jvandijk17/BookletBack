@@ -15,7 +15,7 @@ class LibraryController extends AbstractController
      *      
      */
     public function list()
-    {        
+    {
         $response = new JsonResponse();
         $response->setData([
             'success' => true,
@@ -28,6 +28,27 @@ class LibraryController extends AbstractController
                     'id' => 2,
                     'title' => 'El nombre del viento'
                 ]
+            ]
+        ]);
+        return $response;
+    }
+
+    /**
+     * @Route("/book", name="create_book")
+     *      
+     */
+    public function createBook(Request $request, EntityManagerInterface $em)
+    {
+        $book = new Book();
+        $book->setTitle('Hacia rutas salvajes');
+        $em->persist($book);
+        $em->flush();
+        $response = new JsonResponse();
+        $response->setData([
+            'success' => true,
+            [
+                'id' => $book->getId(),
+                'title' => $book->getTitle()
             ]
         ]);
         return $response;
