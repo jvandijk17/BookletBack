@@ -5,6 +5,7 @@ namespace App\Form\Type;
 use App\Entity\Book;
 use App\Form\Model\BookDto;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,15 +16,19 @@ class BookFormType extends AbstractType
     {
         $builder
             ->add('title', TextType::class)
-            ->add('base64Image', TextType::class);
-        ;
+            ->add('base64Image', TextType::class)
+            ->add('categories', CollectionType::class, [
+                'allow_add' => true,
+                'allow_delete' => true,
+                'entry_type' => CategoryFormType::class
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([        
+        $resolver->setDefaults([
             'data_class' => BookDto::class,
-        ]);        
+        ]);
     }
 
     public function getBlockPrefix()
@@ -31,8 +36,8 @@ class BookFormType extends AbstractType
         return '';
     }
 
-    public function getName() {
+    public function getName()
+    {
         return '';
     }
-
 }

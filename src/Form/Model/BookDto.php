@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Form\Model;
-use Symfony\Component\Validator\Constraints as Assert;
 
-class BookDto {   
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Book;
+
+class BookDto
+{
 
     /**
      * @Assert\NotBlank(
@@ -12,4 +15,17 @@ class BookDto {
      */
     public $title;
     public $base64Image;
+    public $categories;
+
+    public function __construct()
+    {
+        $this->categories = [];
+    }
+
+    public static function createFromBook(Book $book): self
+    {
+        $dto = new self();
+        $dto->title = $book->getTitle();
+        return $dto;
+    }
 }
