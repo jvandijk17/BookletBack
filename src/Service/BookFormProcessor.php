@@ -6,9 +6,6 @@ use App\Entity\Book;
 use App\Form\Model\BookDto;
 use App\Form\Model\CategoryDto;
 use App\Form\Type\BookFormType;
-use App\Service\FileUploader;
-use App\Service\BookManager;
-use App\Service\CategoryManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -51,7 +48,7 @@ class BookFormProcessor
         if ($form->isValid()) {
             // Eliminar Categorias
             foreach ($originalCategories as $originalCategoryDto) {
-                if (!in_array($originalCategoryDto, $bookDto->categories)) {
+                if (!\in_array($originalCategoryDto, $bookDto->categories)) {
                     $category = $this->categoryManager->find($originalCategoryDto->id);
                     $book->removeCategory($category);
                 }

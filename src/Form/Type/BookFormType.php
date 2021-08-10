@@ -2,7 +2,6 @@
 
 namespace App\Form\Type;
 
-use App\Entity\Book;
 use App\Form\Model\BookDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
