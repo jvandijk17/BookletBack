@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=BookRepository::class)
@@ -12,9 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Book
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Id     
+     * @ORM\Column(type="uuid")
      */
     private $id;
 
@@ -35,10 +35,11 @@ class Book
 
     public function __construct()
     {
+        $this->id = Uuid::v4();
         $this->categories = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?Uuid
     {
         return $this->id;
     }

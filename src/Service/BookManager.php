@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Repository\BookRepository;
 use App\Entity\Book;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Uid\Uuid;
 
 class BookManager
 {
@@ -23,7 +24,7 @@ class BookManager
         return $this->bookRepository;
     }
 
-    public function find(int $id): ?Book
+    public function find(Uuid $id): ?Book
     {
         return $this->bookRepository->find($id);
     }

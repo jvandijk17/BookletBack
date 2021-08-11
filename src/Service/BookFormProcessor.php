@@ -9,6 +9,7 @@ use App\Form\Type\BookFormType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Uid\Uuid;
 
 class BookFormProcessor
 {
@@ -56,7 +57,7 @@ class BookFormProcessor
             // Añadir Categorías
             foreach ($bookDto->categories as $newCategoryDto) {
                 if (!$originalCategories->contains($newCategoryDto)) {
-                    $category = $this->categoryManager->find($newCategoryDto->id ?? 0);
+                    $category = $this->categoryManager->find($newCategoryDto->id ?? Uuid::v4());
                     if (!$category) {
                         $category = $this->categoryManager->create();
                         $category->setName($newCategoryDto->name);

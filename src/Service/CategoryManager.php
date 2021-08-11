@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Repository\CategoryRepository;
 use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Uid\Uuid;
 
 class CategoryManager
 {
@@ -23,7 +24,7 @@ class CategoryManager
         return $this->categoryRepository;
     }
 
-    public function find(int $id): ?Category
+    public function find(Uuid $id): ?Category
     {
         return $this->categoryRepository->find($id);
     }
