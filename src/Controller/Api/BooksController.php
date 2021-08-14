@@ -2,15 +2,17 @@
 
 namespace App\Controller\Api;
 
-use App\Service\BookManager;
+use App\Entity\Book;
+use App\Repository\BookRepository;
+use App\Service\Book\DeleteBook;
+use App\Service\Book\GetBook;
 use App\Service\BookFormProcessor;
-use App\Service\FileUploader;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View as Vista;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Uid\Uuid;
+use Throwable;
 
 class BooksController extends AbstractFOSRestController
 {
@@ -19,9 +21,9 @@ class BooksController extends AbstractFOSRestController
      * @Rest\View(serializerGroups={"book"}, serializerEnableMaxDepthChecks=true)
      * 
      */
-    public function getAction(BookManager $bm)
+    public function getAction(BookRepository $bookRepository)
     {
-        return $bm->getRepository()->findAll();
+        return $bookRepository->findAll();
     }
     /**
      * @Rest\Post(path="/books")
@@ -29,12 +31,10 @@ class BooksController extends AbstractFOSRestController
      * 
      */
     public function postAction(
-        BookManager $bookManager,
         BookFormProcessor $bookFormProcessor,
-        Request $request,
-        FileUploader $defaultStorage
+        Request $request
     ) {
-        $book = $bookManager->create();
+        $book = Book::create();
         [$book, $error] = ($bookFormProcessor)($book, $request);
         $statusCode = $book ? Response::HTTP_CREATED : Response::HTTP_BAD_REQUEST;
         $data = $book ?? $error;
@@ -49,10 +49,10 @@ class BooksController extends AbstractFOSRestController
     public function editAction(
         String $id,
         BookFormProcessor $bookFormProcessor,
-        BookManager $bookManager,
+        GetBook $getBook,
         Request $request
     ) {
-        $book = $bookManager->find(Uuid::fromString($id));
+        $book = ($getBook)($id);
         if (!$book) {
             return Vista::create('El libro solicitado no se ha encontrado', Response::HTTP_BAD_REQUEST);
         }
@@ -69,9 +69,9 @@ class BooksController extends AbstractFOSRestController
      */
     public function getSingleAction(
         String $id,
-        BookManager $bookManager
+        GetBook $getBook
     ) {
-        $book = $bookManager->find(Uuid::fromString($id));
+        $book = ($getBook)($id);
         if (!$book) {
             return Vista::create('El libro solicitado no se ha encontrado', Response::HTTP_BAD_REQUEST);
         }
@@ -85,13 +85,13 @@ class BooksController extends AbstractFOSRestController
      */
     public function deleteAction(
         String $id,
-        BookManager $bookManager,
+        DeleteBook $deleteBook
     ) {
-        $book = $bookManager->find(Uuid::fromString($id));
-        if (!$book) {
-            return Vista::create('El libro solicitado no se ha encontrado', Response::HTTP_BAD_REQUEST);
+        try {
+            ($deleteBook)($id);
+        } catch (Throwable $tr) {
+            return Vista::create('Libro no encontrado', Response::HTTP_BAD_REQUEST);
         }
-        $bookManager->delete($book);
         return Vista::create('Libro Eliminado', Response::HTTP_NO_CONTENT);
     }
 }

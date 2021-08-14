@@ -4,16 +4,17 @@ namespace App\Form\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Category;
+use Symfony\Component\Uid\Uuid;
 
 class CategoryDto
 {
-    public $id;
+    public ?Uuid $id = null;
     /**
      * @Assert\NotBlank(
      * message = "El Nombre de la Categoría no puede estar en blanco."
      * )
      */
-    public $name;
+    public ?string $name = null;
 
     public static function createFromCategory(Category $category): self
     {
@@ -21,5 +22,15 @@ class CategoryDto
         $dto->id = $category->getId();
         $dto->name = $category->getName();
         return $dto;
-    }   
+    }
+
+    public function getId(): ?Uuid
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 }

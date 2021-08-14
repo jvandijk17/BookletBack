@@ -39,6 +39,11 @@ class Book
         $this->categories = new ArrayCollection();
     }
 
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function getId(): ?Uuid
     {
         return $this->id;
