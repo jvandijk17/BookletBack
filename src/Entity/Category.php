@@ -29,10 +29,16 @@ class Category
      */
     private $books;
 
-    public function __construct()
+    public function __construct(string $name)
     {
         $this->id = Uuid::v4();
+        $this->name = $name;
         $this->books = new ArrayCollection();
+    }
+
+    public static function create(string $name): self
+    {
+        return new self($name);
     }
 
     public function getId(): ?Uuid
@@ -78,4 +84,10 @@ class Category
 
         return $this;
     }
+
+    public function update(string $name): self {
+        $this->name = $name;
+        return $this;
+    }
+    
 }

@@ -96,4 +96,34 @@ class Book
 
         return $this;
     }
+
+    public function updateCategories(Category ...$categories)
+    {
+        /** @var Category[]|ArrayCollection */
+        $originalCategories = new ArrayCollection();
+        foreach ($this->categories as $category) {
+            $originalCategories->add($category);
+        }
+
+        // Eliminar Categorías
+        foreach ($originalCategories as $originalCategory) {
+            if (!\in_array($originalCategories, $categories)) {
+                $this->removeCategory($originalCategory);
+            }
+        }
+
+        // Añadir Categorías
+        foreach ($categories as $newCategory) {
+            if (!$originalCategories->contains(!$newCategory)) {
+                $this->addCategory($newCategory);
+            }
+        }
+    }
+
+    public function update(string $title, ?string $image, Category ...$categories)
+    {
+        $this->title = $title;
+        $this->image = $image;
+        $this->updateCategories(...$categories);
+    }
 }

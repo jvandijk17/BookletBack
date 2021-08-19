@@ -4,6 +4,7 @@ namespace App\Service\Book;
 
 use App\Entity\Book;
 use App\Repository\BookRepository;
+use App\Model\Exception\Book\BookNotFound;
 use Symfony\Component\Uid\Uuid;
 
 class GetBook
@@ -18,6 +19,10 @@ class GetBook
 
     public function __invoke(string $id): ?Book
     {
-        return $this->bookRepository->find(Uuid::fromString($id));
+        $book = $this->bookRepository->find(Uuid::fromString($id));
+        if (!$book) {
+            BookNotFound::throwException();
+        }
+        return $book;
     }
 }
