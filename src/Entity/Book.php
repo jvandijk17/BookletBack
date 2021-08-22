@@ -33,6 +33,16 @@ class Book
      */
     private $categories;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $score;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -92,7 +102,9 @@ class Book
 
     public function removeCategory(Category $category): self
     {
-        $this->categories->removeElement($category);
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
+        }
 
         return $this;
     }
@@ -120,10 +132,34 @@ class Book
         }
     }
 
-    public function update(string $title, ?string $image, Category ...$categories)
-    {
+    public function update(
+        string $title,
+        ?string $image,
+        ?string $description,
+        ?int $score,
+        Category ...$categories
+    ) {
         $this->title = $title;
         $this->image = $image;
+        $this->description = $description;
+        $this->score = $score;
         $this->updateCategories(...$categories);
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getScore(): ?int
+    {
+        return $this->score;
+    }
+
+    public function setScore(?int $score): self
+    {
+        $this->score = $score;
+
+        return $this;
     }
 }

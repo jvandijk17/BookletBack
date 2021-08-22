@@ -14,6 +14,15 @@ class BookDto
      * )
      */
     public ?string $title = null;
+    public ?string $description = null;
+    /**
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 5,
+     *      notInRangeMessage = "La puntuación debe estar entre {{ min }} y {{ max }}."
+     * )
+     */
+    public ?int $score = null;
     public ?string $base64Image = null;
     /** @var \App\Form\Model\CategoryDto[]|null */
     public ?array $categories = [];
@@ -51,5 +60,21 @@ class BookDto
     public function getCategories(): ?array
     {
         return $this->categories;
+    }
+
+    /**
+     * Get the value of description
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * Get the value of score
+     */
+    public function getScore(): ?int
+    {
+        return $this->score;
     }
 }

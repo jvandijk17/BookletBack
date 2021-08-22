@@ -77,10 +77,16 @@ class BookFormProcessor
         }
 
         $filename = null;
-        if ($bookDto->base64Image) {
-            $filename = $this->fileUploader->uploadBase64File($bookDto->base64Image);
+        if ($bookDto->getBase64Image()) {
+            $filename = $this->fileUploader->uploadBase64File($bookDto->getBase64Image());
         }
-        $book->update($bookDto->title, $filename, ...$categories);
+        $book->update(
+            $bookDto->getTitle(),
+            $filename,
+            $bookDto->getDescription(),
+            $bookDto->getScore(),
+            ...$categories
+        );
         $this->bookRepository->save($book);
         return [$book, null];
     }

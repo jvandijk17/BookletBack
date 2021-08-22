@@ -4,7 +4,11 @@ App\Entity\Book:
       groups: ["book"]
     title:
       groups: ["book"]
+    description:
+      groups: ["book"]
+    score:
+      groups: ["book"]
     image:
       groups: ["book"]
     categories:
-      groups: ["book"]
+      groups: ["book"]  
